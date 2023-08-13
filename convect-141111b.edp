@@ -16,8 +16,11 @@ mesh Th = buildmesh(a1(an2)+a2(an1)+a3(an2)+a4(an1));     // 141107 chiba
 plot(Th,wait=1);    // 141107 chiba
 
 fespace Xh(Th,P2), Mh(Th,P1);
-int i=0;real nu=1.0e-6; real dt=0.001;    // 141107 chibareal alpha=1/dt;
-real g=9.8;    // 141107 chibaXh u1,u2,up1,up2,v1,v2;
+int i=0;
+real nu=1.0e-6; real dt=0.001;    // 141107 chiba
+real alpha=1/dt;
+real g=9.8;    // 141107 chiba
+Xh u1,u2,up1,up2,v1,v2;
 Xh r,rp,rr,QQ=0;    // 141107 chiba
 Mh p,q;
 r=80;    // 141107 chiba
@@ -27,22 +30,44 @@ real kappa=0.14e-6;    // 141107 chiba
 int N=10;  // 20141107 - interpolation
 real h1=R1/N,h2=R2/N;  // 20141107 - interpolation
 
-real xi,yj;  // 20141107 - interpolation ofstream file("temperature.out");
-ofstream f("u.csv"); // 20141107 - interpolation problem NS (u1,u2,p,v1,v2,q,solver=Crout,init=i) = 
-            int2d(Th)(            alpha*x*( u1*v1 + u2*v2 )                        + nu * x*( dx(u1)*dx(v1) + dy(u1)*dy(v1) ) + nu*u1*v1/x             + nu * x*( dx(u2)*dx(v2) + dy(u2)*dy(v2) )            - x*p*q*(0.000001)            - x*( p*dx(v1) + p*dy(v2) + dx(u1)*q + dy(u2)*q ))
+real xi,yj;  // 20141107 - interpolation 
+ofstream file("temperature.out");
+ofstream f("u.csv"); // 20141107 - interpolation 
+
+problem NS (u1,u2,p,v1,v2,q,solver=Crout,init=i) = 
+            int2d(Th)(
+            alpha*x*( u1*v1 + u2*v2 )            
+            + nu * x*( dx(u1)*dx(v1) + dy(u1)*dy(v1) ) + nu*u1*v1/x 
+            + nu * x*( dx(u2)*dx(v2) + dy(u2)*dy(v2) )
+            - x*p*q*(0.000001)
+            - x*( p*dx(v1) + p*dy(v2) + dx(u1)*q + dy(u2)*q ))
             + int2d(Th) (
             -alpha*x*convect([up1,up2],-dt,up1)*v1 
             -alpha*x*convect([up1,up2],-dt,up2)*v2-r*v2*g*x) 
-            + on(1,2,3,u1=0,u2=0)+on(4,u1=0) ;problem thermal(r,rr,solver=Crout,init=i) =
+            + on(1,2,3,u1=0,u2=0)+on(4,u1=0);
+
+problem thermal(r,rr,solver=Crout,init=i) =
     	int2d(Th)(alpha*r*rr*x+ kappa*(dx(r)*dx(rr)+dy(r)*dy(rr))*x)     // 141107 chiba
     	 - int2d(Th)(alpha*convect([up1,up2],-dt,rp)*rr*x+QQ*rr*x)     // 141107 chiba
     	 + on(2,4,r=80.0)+on(3,r=20.0);     // 141107 chiba
-for (i=0;i<=1000;i++) {     up1=u1;     up2=u2;     NS;	 rp=r;      // 141107 chiba
+
+for (i=0;i<=1000;i++) {
+     up1=u1;
+     up2=u2;
+     NS;
+	 rp=r;      // 141107 chiba
 	 thermal;     // 141107 chiba
 	 n++;
-     if ( !(i % 10))     for (int i2=0; i2<=N; i2++) { // 20141007 - interpolation      for (int i1=0; i1<=N; i1++) { // 20141007 - interpolation        xi=i1*h1; // 20141007 - interpolation        yj=i2*h2; // 20141007 - interpolation        if (i1<N) {f << r(xi,yj) << ", ";} // 20141007 - interpolation 
+     if ( !(i % 10))
+     for (int i2=0; i2<=N; i2++) { // 20141007 - interpolation 
+     for (int i1=0; i1<=N; i1++) { // 20141007 - interpolation 
+       xi=i1*h1; // 20141007 - interpolation 
+       yj=i2*h2; // 20141007 - interpolation 
+       if (i1<N) {f << r(xi,yj) << ", ";} // 20141007 - interpolation 
        if (i1==N) {f << r(xi,yj);} // 20141007 - interpolation
-       } // 20141007 - interpolation        f << endl;  // 20141007 - interpolation
+       } // 20141007 - interpolation 
+       f << endl;  // 20141007 - interpolation
      } 
-     //    plot every 10 iteration     plot([u1,u2],value=1,coef=10., cmm="i="+i+"  ave temp="+r[].sum/r[].n, wait=0);     // 141107 chiba
+     //    plot every 10 iteration
+     plot([u1,u2],value=1,coef=10., cmm="i="+i+"  ave temp="+r[].sum/r[].n, wait=0);     // 141107 chiba
      };
