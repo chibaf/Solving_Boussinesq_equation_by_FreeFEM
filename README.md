@@ -12,6 +12,8 @@ https://www.youtube.com/watch?v=XregPrTEXlc
 
 ## ref
 FreeFEM - An open-source PDE Solver using the Finite Element Method
-https://freefem.org
+https://freefem.org 
 
+FreeFem++, 2d, 3d tools for PDE simulation / F. Hecht 
+https://www.ljll.math.upmc.fr/hecht/ftp/Cours/Rennes/ff++-ANEDP.pdf
 
