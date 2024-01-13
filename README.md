@@ -5,7 +5,7 @@ convect-141111b.edp: FreeFEM++ code
 
 usage : FreeFem++ convect-141111b.edp
 
-
+<img width="961" alt="Screenshot 2024-01-14 at 1 56 14" src="https://github.com/chibaf/Solving_Boussinesq_equation_by_FreeFEM/assets/1296728/76ffb432-9583-4129-a547-0bebb96162ab">
 
 Solving Boussinesq equation by FreeFEM++ - YouTube
 https://www.youtube.com/watch?v=XregPrTEXlc
