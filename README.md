@@ -1,5 +1,5 @@
 # convect-141111b.edp
-solving Boussinesq equation by FreeFEM++
+solving Boussinesq approximate by FreeFEM++
 
 convect-141111b.edp: FreeFEM++ code
 
